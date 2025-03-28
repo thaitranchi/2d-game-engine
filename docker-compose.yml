@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  game_server:
+    build: .
+    ports:
+      - "5001:5001"
+    restart: always

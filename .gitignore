@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Flask and socketio specifics
+instance/
+*.sqlite3
+*.db
+
+# Pygame / Game assets
+/assets/__pycache__/
+/assets/*.tmp
+/assets/*.bak
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# VSCode settings
+.vscode/
+
+# MacOS and Linux system files
+.DS_Store
+Thumbs.db
+
+# PyCharm
+.idea/
+*.json

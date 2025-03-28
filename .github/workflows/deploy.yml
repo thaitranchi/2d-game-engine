@@ -1,0 +1,62 @@
+name: Multi-Environment Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployments on push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t my-app:${{ github.sha }} .
+      - name: Log in to AWS ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+      - name: Tag and push Docker image
+        run: |
+          docker tag my-app:${{ github.sha }} ${{ secrets.ECR_REPOSITORY }}/my-app:${{ github.sha }}
+          docker push ${{ secrets.ECR_REPOSITORY }}/my-app:${{ github.sha }}
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Staging via Helm
+        run: |
+          helm upgrade --install my-app-staging ./helm-chart \
+            --namespace staging \
+            --set image.tag=${{ github.sha }} \
+            --values helm-chart/values-staging.yaml
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG_STAGING }}
+
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_prod == 'true'
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Production via Helm
+        run: |
+          helm upgrade --install my-app-production ./helm-chart \
+            --namespace production \
+            --set image.tag=${{ github.sha }} \
+            --values helm-chart/values-production.yaml
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG_PRODUCTION }}
