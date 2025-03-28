@@ -34,10 +34,13 @@ A lightweight and modular 2D game engine built with **Pygame**. This engine prov
 
 1. **Run the Flask-SocketIO Server:**
    ```bash
-   python server.py
+   python ./server/server.py
    ```
-
-2. **Run the Game:**
+2. **Run the Lobby Server:**
+   ```bash
+   python ./server/lobby_server.py
+   ```
+3. **Run the Game:**
    ```bash
    python main.py
    ```
