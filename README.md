@@ -65,7 +65,10 @@ A lightweight and modular 2D game engine built with **Pygame**. This engine prov
 │   ├── network.py
 │   ├── save_system.py
 │   └── power_up.py
-├── server.py
+├── server/
+│    ├── server.py
+│    ├── lobby_server.py
+│    └── auth_helpers.py
 ├── requirements.txt
 ├── README.md
 ```
